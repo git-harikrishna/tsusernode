@@ -11,7 +11,7 @@ const connectDB = async (): Promise<void> => {
 
     const mongooseOptions: ConnectOptions = {
       useUnifiedTopology: true,
-    } as any;
+    } as ConnectOptions;
 
     await mongoose.connect(url, mongooseOptions);
     console.log("Connected to MongoDB");

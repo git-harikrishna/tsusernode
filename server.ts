@@ -1,6 +1,4 @@
-import express, { Application } from "express";
-import userRouter from "./routes/user";
-import methodLogger from "./middleware/logger";
+import express, { Application } from "express"; 
 import connectDB from "./config";
 
 import jwt from "jsonwebtoken";
@@ -9,9 +7,7 @@ import authenticateRouter from "./routes/authenticationRoutes";
 const app: Application = express();
 
 app.use(express.json());
-app.use(methodLogger);
-app.use("/auth", authenticateRouter); //authenticateRouter is for the login and refresh token route 
-app.use("/user", userRouter);  // for user control routes
+app.use("/auth", authenticateRouter); //authenticateRouter is for the login and refresh token route
 
 const port: number = 3000;
 

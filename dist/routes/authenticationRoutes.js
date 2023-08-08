@@ -31,4 +31,5 @@ const authFunctions = __importStar(require("../controller/authController"));
 const authenticateRouter = express_1.default.Router();
 authenticateRouter.post("/login", authFunctions.login);
 authenticateRouter.get("/refreshToken", authFunctions.refreshToken);
+authenticateRouter.post("/signUp", authFunctions.signUp);
 exports.default = authenticateRouter;
