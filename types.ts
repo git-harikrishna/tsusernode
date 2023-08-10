@@ -1,8 +1,14 @@
 import { Types } from "mongoose";
-import { Request } from 'express'
 
 export interface IUser {
   id: Types.ObjectId;
 }
-
-
+export interface db_User {
+  id: Types.ObjectId;
+  name: string;
+  email: string;
+  mobile_no: Number;
+  password: string;
+  emp_code: Number;
+  __v: Number;
+}

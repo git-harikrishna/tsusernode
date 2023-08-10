@@ -8,7 +8,7 @@ const config_1 = __importDefault(require("./config"));
 const authenticationRoutes_1 = __importDefault(require("./routes/authenticationRoutes"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use("/auth", authenticationRoutes_1.default); //authenticateRouter is for the login and refresh token route
+app.use("/", authenticationRoutes_1.default); //authenticateRouter is for the login and refresh token route
 const port = 3000;
 (0, config_1.default)(); // function to initiate db connection
 app.listen(port, () => {

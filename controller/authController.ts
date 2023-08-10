@@ -3,14 +3,14 @@ import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import User from "../models/userSchema";
 import bcrypt from "bcrypt";
 import { IUser } from "../types"; // Make sure this import is correct
-import { ObjectId, Types } from "mongoose";
+import { Types } from "mongoose";
 
 // Rest of your code...
 async function generateAccessToken(user: IUser): Promise<string> {
   console.log(user);
   const accessToken: string = await jwt.sign(
     user,
-    process.env.ACCESS_TOKEN_SECRET? process.env.ACCESS_TOKEN_SECRET.toString():"",
+    process.env.ACCESS_TOKEN_SECRET!,
     {
       expiresIn: "2m",
     }
@@ -22,7 +22,7 @@ async function generateAccessToken(user: IUser): Promise<string> {
 async function generateRefreshToken(user: IUser): Promise<string> {
   const refreshToken: string = await jwt.sign(
     user,
-    process.env.REFRESH_ACCESS_TOKEN as string,
+    process.env.REFRESH_ACCESS_TOKEN!,
     {
       expiresIn: "30m",
     }
@@ -43,8 +43,11 @@ export const signUp = async (
 
   const user = {
     name: req.body.name,
-    mobileno: req.body.mobileno,
+    mobileno: req.body.mobile_no,
     password: securePassword,
+    emp_code: req.body.emp_code,
+    blood_grp: req.body.blood_grp,
+    dob: req.body.dob,
   };
 
   try {
@@ -62,7 +65,7 @@ export const signUp = async (
 
     const newuser = await new User(user);
     await newuser.save();
-    return res.status(200).json(newuser);
+    return res.status(200).json({msg : "User added successfully" , data : newuser});
   } catch (e) {
     return res
       .status(500)
@@ -91,14 +94,17 @@ export const login = async (
     if (!result) {
       return res.status(401).json({ msg: "Invalid Password" });
     } else {
-      // const id : Types.ObjectId = dbuser._id;
+      const id: Types.ObjectId = dbuser._id;
 
-      const user: IUser = { id: dbuser._id };
+      const user: IUser = { id };
 
       const accessToken: string = await generateAccessToken(user);
       const refreshToken: string = await generateRefreshToken(user);
 
-      res.status(200).json({ accessToken, refreshToken });
+      res.status(200).json({
+        msg: "Welcome " + dbuser.name,
+        tokens: { accessToken, refreshToken },
+      });
     }
   } catch (e) {
     console.error("Error in login:", e);
@@ -125,14 +131,14 @@ export const refreshToken = async (
   const refreshToken: string = req.headers.token.toString();
 
   try {
-    const user = jwt.verify(
+    const user: string | JwtPayload = jwt.verify(
       refreshToken,
-      process.env.REFRESH_ACCESS_TOKEN
-        ? process.env.REFRESH_ACCESS_TOKEN?.toString()
-        : ""
-    ) as JwtPayload;
+      process.env.REFRESH_ACCESS_TOKEN!
+    );
 
-    if (!user || !user.id) {
+    // console.log("user : " + user);
+
+    if (!user || typeof user === "string" || !user.id) {
       return res.status(401).json({ msg: "Invalid refreshToken" });
     }
 

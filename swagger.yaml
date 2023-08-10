@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: user api
+  description: user node api documentation
+  version: 1.0.0
+paths:
+  /login:
+    description: Login function
+    post:
+      description: Function to login a user and get user auth token and refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: hari
+                password:
+                  type: string
+                  example: pass
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Welcome dummy2
+                  tokens:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDQ4OTllNTM2ZDFhYjFkODZlZDE4MSIsImlhdCI6MTY5MTY1MDUwNywiZXhwIjoxNjkxNjUwNjI3fQ.Lxy5vaqm_FphM2EM5qsDwGLt-NRKi_h7AQQmiFG4V6Q"
+                      refreshToken:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDQ4OTllNTM2ZDFhYjFkODZlZDE4MSIsImlhdCI6MTY5MTY1MDUwNywiZXhwIjoxNjkxNjUyMzA3fQ.BpZAiEBLsQCh0QGl6Oy5_XrHmIW_YJ68-BGv2JHg7_s"
+
+  /refreshtoken:
+    description: Refresh access token
+    get:
+      description: Get a new access token using a refresh token
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDQ4OTllNTM2ZDFhYjFkODZlZDE4MSIsImlhdCI6MTY5MTY1MjE5NCwiZXhwIjoxNjkxNjUyMzE0fQ.pooC4bzPdPTVAfQNo-TUUU2N66kdyBHg5vg7t3GJmcM"
+
+  /signUp:
+    description: User sign up
+    post:
+      description: Function to sign up a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: likhit
+                emp_code:
+                  type: number
+                  example: 3058
+                password:
+                  type: string
+                  example: pass
+                email:
+                  type: string
+                  example: likhit@gmail.com
+                mobile_no:
+                  type: number
+                  example: 9876543210
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: User added successfully
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: likhit
+                      mobileno:
+                        type: number
+                        example: 9876543210
+                      password:
+                        type: string
+                        example: "$2b$10$1PHLL7W/U2d0HCPLRyO8QewrkofiRVaRaEnNPzUUI9gCUth6g1aam"
+                      emp_code:
+                        type: string
+                        example: "3058"
+                      _id:
+                        type: string
+                        example: "64d48bd26af268e3f866f421"
+                      __v:
+                        type: number
+                        example: 0
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -7,11 +7,10 @@ const connectDB = async (): Promise<void> => {
   try {
     config();
 
-    const url = process.env.dbUrl as string;
+    const url:string = process.env.dbUrl ? process.env.dbUrl?.toString() : "";
 
     const mongooseOptions: ConnectOptions = {
-      useUnifiedTopology: true,
-    } as ConnectOptions;
+    };
 
     await mongoose.connect(url, mongooseOptions);
     console.log("Connected to MongoDB");
@@ -19,19 +18,28 @@ const connectDB = async (): Promise<void> => {
     console.log("Error connecting to MongoDB:", error);
   }
 
+  const now : Date = new Date();
+
   const userDummy = [
     {
       name: "dummy1",
-      mobileno: "9445582495",
+      mobileno: 9445582495,
       password: "password",
+      emp_code : "i1",
+      blood_grp : "O+ve"
     },
     {
       name: "dummy2",
       password: "password",
+      mobileno: 1111111111,
+      empcode : "i2",
     },
     {
       name: "dummy 3",
       password: "password",
+      mobileno : 2222222222,
+      emp_code : "i3",
+      dob : now.getDate()  + '/' + (now.getMonth() + 1) + '/' + now.getFullYear()
     },
   ];
 
@@ -43,8 +51,8 @@ const connectDB = async (): Promise<void> => {
     for (let i = 0; i < userDummy.length; i++) {
       let temp = userDummy[i].password;
 
-      const saltPassword : string = await bcrypt.genSalt(10);
-      const securePassword : string  = await bcrypt.hash(temp, saltPassword);
+      const saltPassword: string = await bcrypt.genSalt(10);
+      const securePassword: string = await bcrypt.hash(temp, saltPassword);
 
       userDummy[i].password = securePassword;
     }
@@ -56,7 +64,6 @@ const connectDB = async (): Promise<void> => {
   }
 };
 
-
-// the password is hashed and stored 
+// the password is hashed and stored
 
 export default connectDB;

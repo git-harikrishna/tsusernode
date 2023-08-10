@@ -15,14 +15,25 @@ const userSchema = new mongoose_1.default.Schema({
         required: true,
     },
     mobileno: {
-        type: String,
-        maxlength: 10,
-        minlength: 10,
+        type: Number,
+        required: true,
     },
     password: {
         type: String,
         minlength: 8,
         required: true
+    },
+    emp_code: {
+        type: String,
+        require: true,
+    },
+    email: {
+        type: String,
+        require: true,
+    },
+    dob: {
+        type: Date,
+        require: false,
     },
 });
 const UserModel = mongoose_1.default.model("User", userSchema);

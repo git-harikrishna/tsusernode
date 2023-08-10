@@ -41,8 +41,11 @@ const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     const securePassword = yield bcrypt_1.default.hash(temp, saltPassword);
     const user = {
         name: req.body.name,
-        mobileno: req.body.mobileno,
+        mobileno: req.body.mobile_no,
         password: securePassword,
+        emp_code: req.body.emp_code,
+        blood_grp: req.body.blood_grp,
+        dob: req.body.dob,
     };
     try {
         if (req.body.name == null) {
@@ -56,7 +59,7 @@ const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         const newuser = yield new userSchema_1.default(user);
         yield newuser.save();
-        return res.status(200).json(newuser);
+        return res.status(200).json({ msg: "User added successfully", data: newuser });
     }
     catch (e) {
         return res
@@ -78,11 +81,14 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(401).json({ msg: "Invalid Password" });
         }
         else {
-            // const id : Types.ObjectId = dbuser._id;
-            const user = { id: dbuser._id };
+            const id = dbuser._id;
+            const user = { id };
             const accessToken = yield generateAccessToken(user);
             const refreshToken = yield generateRefreshToken(user);
-            res.status(200).json({ accessToken, refreshToken });
+            res.status(200).json({
+                msg: "Welcome " + dbuser.name,
+                tokens: { accessToken, refreshToken },
+            });
         }
     }
     catch (e) {
@@ -92,18 +98,18 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 }); // Login function to provide access and refresh token once the user logs in
 exports.login = login;
 const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Refresh token" + req.headers.token);
-    if (
-    // req.headers.token == null ||
-    // req.headers.token === "" ||
-    req.headers.token == undefined) {
+    // console.log("Refresh token"+ req.headers.token);
+    if (req.headers.token == null ||
+        req.headers.token === "" ||
+        req.headers.token == undefined) {
         return res.status(401).json({ msg: "refreshToken undefined" });
     }
     console.log("token :" + req.headers.token);
-    const refreshToken = (req.headers.token).toString();
+    const refreshToken = req.headers.token.toString();
     try {
         const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_ACCESS_TOKEN);
-        if (!user || !user.id) {
+        // console.log("user : " + user);
+        if (!user || typeof user === "string" || !user.id) {
             return res.status(401).json({ msg: "Invalid refreshToken" });
         }
         const accessToken = yield generateAccessToken({

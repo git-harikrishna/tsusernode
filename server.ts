@@ -7,7 +7,7 @@ import authenticateRouter from "./routes/authenticationRoutes";
 const app: Application = express();
 
 app.use(express.json());
-app.use("/auth", authenticateRouter); //authenticateRouter is for the login and refresh token route
+app.use("/", authenticateRouter); //authenticateRouter is for the login and refresh token route
 
 const port: number = 3000;
 

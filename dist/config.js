@@ -17,31 +17,38 @@ const userSchema_1 = __importDefault(require("./models/userSchema")); // Import 
 const dotenv_1 = require("dotenv");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         (0, dotenv_1.config)();
-        const url = process.env.dbUrl;
-        const mongooseOptions = {
-            useUnifiedTopology: true,
-        };
+        const url = process.env.dbUrl ? (_a = process.env.dbUrl) === null || _a === void 0 ? void 0 : _a.toString() : "";
+        const mongooseOptions = {};
         yield mongoose_1.default.connect(url, mongooseOptions);
         console.log("Connected to MongoDB");
     }
     catch (error) {
         console.log("Error connecting to MongoDB:", error);
     }
+    const now = new Date();
     const userDummy = [
         {
             name: "dummy1",
-            mobileno: "9445582495",
+            mobileno: 9445582495,
             password: "password",
+            emp_code: "i1",
+            blood_grp: "O+ve"
         },
         {
             name: "dummy2",
             password: "password",
+            mobileno: 1111111111,
+            empcode: "i2",
         },
         {
             name: "dummy 3",
             password: "password",
+            mobileno: 2222222222,
+            emp_code: "i3",
+            dob: now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear()
         },
     ];
     // dummy users are created for data population while server starting
@@ -60,5 +67,5 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error("Error inserting dummy users:", error);
     }
 });
-// the password is hashed and stored 
+// the password is hashed and stored
 exports.default = connectDB;
