@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import User from "../models/userSchema";
 import bcrypt from "bcrypt";
-import { IUser } from "../types"; // Make sure this import is correct
+import { IUser, db_User } from "../types"; // Make sure this import is correct
 import { Types } from "mongoose";
 
 // Rest of your code...
@@ -41,37 +41,49 @@ export const signUp = async (
   const saltPassword: string = await bcrypt.genSalt(10);
   const securePassword: string = await bcrypt.hash(temp, saltPassword);
 
-  const user = {
+  const user: db_User = {
     name: req.body.name,
-    mobileno: req.body.mobile_no,
+    mobile_no: req.body.mobile_no,
+    email: req.body.email,
     password: securePassword,
     emp_code: req.body.emp_code,
-    blood_grp: req.body.blood_grp,
-    dob: req.body.dob,
   };
 
   try {
-    if (req.body.name == null) {
+    if (!req.body.name) {
       return res.status(400).json({ message: "User name can't be null" });
     }
 
-    const dbuser = await User.findOne({ name: req.body.name });
-    if (dbuser != null) {
-      return res.status(400).json({
-        message:
-          "User name already exists. Please choose a different user name.",
-      });
+    const dbuser: db_User | null = await User.findOne({ name: req.body.name });
+    if (dbuser) {
+      return res
+        .status(400)
+        .json({ message: "User name already exists." });
     }
 
-    const newuser = await new User(user);
+    console.log("Checkpoint 1");
+
+    const newuser = new User(user);
+
+    console.log("Checkpoint 2: " + newuser);
+
     await newuser.save();
-    return res.status(200).json({msg : "User added successfully" , data : newuser});
+
+    console.log("Checkpoint 3");
+
+    return res
+      .status(200)
+      .json({ msg: "User added successfully", data: newuser });
   } catch (e) {
+    console.error("Error in signUp:", e);
     return res
       .status(500)
       .json({ error: "An error occurred while processing the request." });
   }
-}; //Function to add new user
+};
+
+// Other code remains the same...
+//Function to add new user
 
 export const login = async (
   req: Request,

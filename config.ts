@@ -25,7 +25,7 @@ const connectDB = async (): Promise<void> => {
   const userDummy = [
     {
       name: "dummy1",
-      mobileno: 9445582495,
+      mobile_no: 9445582495,
       password: "password",
       emp_code : "i1",
       blood_grp : "O+ve"
@@ -33,13 +33,13 @@ const connectDB = async (): Promise<void> => {
     {
       name: "dummy2",
       password: "password",
-      mobileno: 1111111111,
+      mobile_no: 1111111111,
       empcode : "i2",
     },
     {
       name: "dummy 3",
       password: "password",
-      mobileno : 2222222222,
+      mobile_no : 2222222222,
       emp_code : "i3",
       dob : now
     },
