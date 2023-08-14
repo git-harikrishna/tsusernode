@@ -29,6 +29,7 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("Error connecting to MongoDB:", error);
     }
     const now = new Date();
+    // const dob = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
     const userDummy = [
         {
             name: "dummy1",
@@ -48,7 +49,7 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
             password: "password",
             mobileno: 2222222222,
             emp_code: "i3",
-            dob: now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear()
+            dob: now
         },
     ];
     // dummy users are created for data population while server starting

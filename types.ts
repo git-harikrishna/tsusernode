@@ -10,5 +10,5 @@ export interface db_User {
   mobile_no: Number;
   password: string;
   emp_code: Number;
-  __v: Number;
+  dob : Date;
 }

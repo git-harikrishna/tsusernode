@@ -18,7 +18,9 @@ const connectDB = async (): Promise<void> => {
     console.log("Error connecting to MongoDB:", error);
   }
 
-  const now : Date = new Date();
+  const now: Date = new Date();
+  // const dob = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
+
 
   const userDummy = [
     {
@@ -39,7 +41,7 @@ const connectDB = async (): Promise<void> => {
       password: "password",
       mobileno : 2222222222,
       emp_code : "i3",
-      dob : now.getDate()  + '/' + (now.getMonth() + 1) + '/' + now.getFullYear()
+      dob : now
     },
   ];
 
