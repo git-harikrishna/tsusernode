@@ -13,6 +13,7 @@ const connectDB = async (): Promise<void> => {
     };
 
     await mongoose.connect(url, mongooseOptions);
+    await UserModel.deleteMany({});
     console.log("Connected to MongoDB");
 
     const now: Date = new Date();
@@ -41,7 +42,7 @@ const connectDB = async (): Promise<void> => {
     ];
   
     // dummy users are created for data population while server starting
-    await UserModel.deleteMany({});
+    
   
     for (let i = 0; i < userDummy.length; i++) 
       {

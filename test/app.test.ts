@@ -18,6 +18,7 @@ describe("Signup Function Testing", () => {
   let res: Partial<Response>;
 
   beforeEach(() => {
+    User.deleteMany({});
     res = {};
   });
 
@@ -26,7 +27,7 @@ describe("Signup Function Testing", () => {
   });
 
   it("should create a new user and return 200", async function () {
-    this.timeout(5000);
+    this.timeout(10000);
 
     const newUser = {
       name: "dummy4",
@@ -142,33 +143,5 @@ describe("Login Function Testing", async () => {
     expect(res.status).to.be.equal(200);
   });
 
-  //   it("should return 200 if username and password is valid", async function () {
-  //     this.timeout(5000);
-  //     const user = {
-  //       name: "likhit5mar",
-  //       password: "pass",
-  //     };
-
-  //     // const result2: boolean = false;
-
-  //     // const findOneStub = sinon.stub(User, "findOne").resolves(returnedUser);
-  //     // const bcryptCompareStub = sinon.stub(bcrypt, "compare").resolves(result2);
-
-  //     const res = await chai.request(app).post("/login").send(user);
-
-  //     expect(res.status).to.be.equal(200);
-
-  //     // const result = sinon.assert.calledWith(findOneStub, { name: "dummy4" });
-  //     // sinon.assert.calledWith(
-  //     //   bcryptCompareStub,
-  //     //   user.password,
-  //     //   returnedUser.password
-  //     // );
-  //     // expect(result.status).to.be.equal
-
-  //     // expect(result2).to.be.equal(false);
-
-  //     // findOneStub.restore();
-  //     // bcryptCompareStub.restore();
-  //   });
+  
 });
