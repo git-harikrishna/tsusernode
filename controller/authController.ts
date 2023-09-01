@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import User from "../models/userSchema";
 import bcrypt from "bcrypt";
 import { IUser, db_User } from "../types"; // Make sure this import is correct
 import { Types } from "mongoose";
 
 // Rest of your code...
-async function generateAccessToken(user: IUser): Promise<string> {
+export async function generateAccessToken(user: IUser): Promise<string> {
   console.log(user);
   const accessToken: string = await jwt.sign(
     user,
@@ -15,11 +15,11 @@ async function generateAccessToken(user: IUser): Promise<string> {
       expiresIn: "2m",
     }
   );
-
+  console.log(accessToken);
   return accessToken;
 } // Function to generate accesstoken
 
-async function generateRefreshToken(user: IUser): Promise<string> {
+export async function generateRefreshToken(user: IUser): Promise<string> {
   const refreshToken: string = await jwt.sign(
     user,
     process.env.REFRESH_ACCESS_TOKEN!,
@@ -56,9 +56,7 @@ export const signUp = async (
 
     const dbuser: db_User | null = await User.findOne({ name: req.body.name });
     if (dbuser) {
-      return res
-        .status(400)
-        .json({ message: "User name already exists." });
+      return res.status(400).json({ message: "User name already exists." });
     }
 
     console.log("Checkpoint 1");
@@ -95,8 +93,14 @@ export const login = async (
     const loginname: string = req.body.name;
     const loginpassword: string = req.body.password;
 
+    console.log(loginpassword, loginname);
+
     const dbuser = await User.findOne({ name: loginname });
-    if (!dbuser) return res.status(400).json({ msg: "No such username found" });
+    console.log(dbuser);
+    if (!dbuser || dbuser.name == undefined)
+      return res.status(400).json({ msg: "No such username found" });
+
+    console.log(loginpassword, dbuser.password);
 
     const result: boolean = await bcrypt.compare(
       loginpassword,
