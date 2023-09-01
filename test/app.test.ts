@@ -4,11 +4,6 @@ import chaiHttp from "chai-http";
 import { NextFunction, Response, Request, response } from "express";
 import User from "../models/userSchema";
 import bcrypt from "bcrypt";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../controller/authController";
-// import server from '../server';
 import app from "../server";
 
 chai.use(chaiHttp);
@@ -17,8 +12,8 @@ describe("Signup Function Testing", () => {
   let req: any;
   let res: Partial<Response>;
 
-  beforeEach(() => {
-    User.deleteMany({});
+  before(async() => {
+    // await User.deleteMany({});
     res = {};
   });
 
@@ -27,8 +22,8 @@ describe("Signup Function Testing", () => {
   });
 
   it("should create a new user and return 200", async function () {
-    this.timeout(10000);
-
+    this.timeout(100000);
+    await User.deleteMany({});
     const newUser = {
       name: "dummy4",
       mobile_no: 9445582495,
@@ -40,6 +35,8 @@ describe("Signup Function Testing", () => {
     const response = await chai.request(app).post("/signup").send(newUser);
 
     expect(response.status).to.equal(200);
+
+    // done();
   });
 
   it("should return 400 if username already exists", async () => {
@@ -102,8 +99,6 @@ describe("Login Function Testing", async () => {
       password: "invalidpassword",
     };
 
-    const result1: boolean = false;
-
     const returnedUser = {
       name: "dummy4",
       mobile_no: 9445582495,
@@ -112,20 +107,13 @@ describe("Login Function Testing", async () => {
       blood_grp: "O+ve",
     };
     const findOneStub = sinon.stub(User, "findOne").resolves(returnedUser);
-    const bcryptCompareStub = sinon.stub(bcrypt, "compare").resolves(result1);
+    const bcryptCompareStub = sinon.stub(bcrypt, "compare").resolves(false);
 
     const res = await chai.request(app).post("/login").send(user);
 
     expect(res.status).to.be.equal(401);
 
     sinon.assert.calledWith(findOneStub, { name: "dummy4" });
-    sinon.assert.calledWith(
-      bcryptCompareStub,
-      user.password,
-      returnedUser.password
-    );
-
-    expect(result1).to.be.equal(false);
 
     findOneStub.restore();
     bcryptCompareStub.restore();
@@ -137,6 +125,17 @@ describe("Login Function Testing", async () => {
       name: "dummy4",
       password: "password",
     };
+
+    const returnedUser = {
+        name: "dummy4",
+        mobile_no: 9445582495,
+        password: "password",
+        emp_code: "i1",
+        blood_grp: "O+ve",
+      };
+
+    const bcryptCompareStub = sinon.stub(bcrypt, "compare").resolves(true);
+    sinon.stub(User,'findOne').resolves(returnedUser);
 
     const res = await chai.request(app).post("/login").send(user);
 

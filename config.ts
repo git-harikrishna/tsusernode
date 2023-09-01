@@ -13,7 +13,7 @@ const connectDB = async (): Promise<void> => {
     };
 
     await mongoose.connect(url, mongooseOptions);
-    await UserModel.deleteMany({});
+    // await UserModel.deleteMany({});
     console.log("Connected to MongoDB");
 
     const now: Date = new Date();
