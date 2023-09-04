@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose from "mongoose";
 
 // export interface IUser extends Document {
 //   name: string;
@@ -11,16 +11,28 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  mobileno: {
-    type: String,
-    maxlength: 10,
-    minlength: 10,
+  mobile_no: {
+    type: Number,
+    required : true,
   },
   password: {
     type: String,
     minlength: 8,
     required : true
   },
+  emp_code: {
+    type: String,
+    require: true,
+  },
+  email: {
+    type: String,
+    require: true,
+  },
+  dob: {
+    type: Date,
+    require: false,
+  },
+
 });
 
 const UserModel = mongoose.model("User", userSchema);
