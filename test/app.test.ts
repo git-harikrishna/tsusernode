@@ -5,8 +5,10 @@ import { NextFunction, Response, Request, response } from "express";
 import User from "../models/userSchema";
 import bcrypt from "bcrypt";
 import app from "../server";
+import sinonChai from "sinon-chai";
 
 chai.use(chaiHttp);
+chai.use(sinonChai)
 
 describe("Signup Function Testing", () => {
   let req: any;
@@ -31,12 +33,10 @@ describe("Signup Function Testing", () => {
       emp_code: "i1",
       blood_grp: "O+ve",
     };
-
     const response = await chai.request(app).post("/signup").send(newUser);
 
     expect(response.status).to.equal(200);
 
-    // done();
   });
 
   it("should return 400 if username already exists", async () => {
@@ -55,9 +55,9 @@ describe("Signup Function Testing", () => {
 });
 
 describe("Login Function Testing", async () => {
-  let req: any; // Change this to match your request structure
+  let req: any; 
   let res: Partial<Response>;
-  let next: any; // Change this to match your NextFunction type
+  let next: any;
 
   beforeEach(() => {
     req = Promise<Request>;
@@ -84,12 +84,14 @@ describe("Login Function Testing", async () => {
       .send({ name: "nonExistentUser", password: "password123" });
 
     expect(res.status).to.be.equals(400);
-    // expect(res.body).to.deep.equal({ msg: 'No such username found' });
+    expect(res.body).to.deep.equal({ msg: 'No such username found' });
 
     const fetchedUser = sinon.assert.calledWith(findOneStub, {
       name: "nonExistentUser",
     });
 
+
+    expect(findOneStub).to.have.been.calledWith({name : "nonExistentUser"});
     expect(fetchedUser).to.be.undefined;
   });
 
@@ -99,6 +101,7 @@ describe("Login Function Testing", async () => {
       password: "invalidpassword",
     };
 
+    
     const returnedUser = {
       name: "dummy4",
       mobile_no: 9445582495,
@@ -112,19 +115,17 @@ describe("Login Function Testing", async () => {
     const res = await chai.request(app).post("/login").send(user);
 
     expect(res.status).to.be.equal(401);
-
-    sinon.assert.calledWith(findOneStub, { name: "dummy4" });
-
-    findOneStub.restore();
+    expect(findOneStub).to.have.been.calledWith({name : "dummy4"});
     bcryptCompareStub.restore();
   });
 
-  it("should return 200 if username and password is valid", async function () {
+  it("should return 200 if username and password are valid", async function () {
     this.timeout(5000);
     const user = {
-      name: "dummy4",
-      password: "password",
+        name: "dummy4",
+        password: "password",
     };
+
 
     const returnedUser = {
         name: "dummy4",
@@ -132,15 +133,19 @@ describe("Login Function Testing", async () => {
         password: "password",
         emp_code: "i1",
         blood_grp: "O+ve",
-      };
+    };
 
     const bcryptCompareStub = sinon.stub(bcrypt, "compare").resolves(true);
-    sinon.stub(User,'findOne').resolves(returnedUser);
+    const findOneStub = sinon.stub(User, 'findOne').resolves(returnedUser);
 
     const res = await chai.request(app).post("/login").send(user);
 
+    expect(findOneStub).to.have.been.calledWith({name : "dummy4"});
     expect(res.status).to.be.equal(200);
-  });
-
-  
 });
+
+
+
+ 
+});
+
