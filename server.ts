@@ -9,14 +9,12 @@ const app: Application = express();
 app.use(express.json());
 app.use("/", authenticateRouter); //authenticateRouter is for the login and refresh token route
 
-const port: number = 3000;
+const port: number = 5000;
 
-// connectDB(); // function to initiate db connection
+connectDB(); // function to initiate db connection
 
 async function server() {
-  return await connectDB().then(() =>
-    app.listen(5000, () => console.log(`Server Started at port : ${port}`))
-  );
+  app.listen(port, () => console.log(`Server Started at port : ${port}`));
 }
 
 server();

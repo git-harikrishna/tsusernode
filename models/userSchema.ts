@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
 
-// export interface IUser extends Document {
-//   name: string;
-//   mobileno: string;
-//   password: string;
-// }
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,

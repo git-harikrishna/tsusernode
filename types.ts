@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IUser {
-  id: Types.ObjectId;
+  id: Types.ObjectId | string;
 }
 export interface db_User {
   id?: Types.ObjectId;

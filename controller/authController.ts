@@ -4,10 +4,12 @@ import User from "../models/userSchema";
 import bcrypt from "bcrypt";
 import { IUser, db_User } from "../types"; // Make sure this import is correct
 import { Types } from "mongoose";
+import { access } from "fs";
 
 // Rest of your code...
 export async function generateAccessToken(user: IUser): Promise<string> {
-  console.log(user);
+  // return "hello";
+  // console.log(user);
   const accessToken: string = await jwt.sign(
     user,
     process.env.ACCESS_TOKEN_SECRET!,
@@ -15,11 +17,12 @@ export async function generateAccessToken(user: IUser): Promise<string> {
       expiresIn: "2m",
     }
   );
-  console.log(accessToken);
+  // // console.log(accessToken);
   return accessToken;
 } // Function to generate accesstoken
 
 export async function generateRefreshToken(user: IUser): Promise<string> {
+  // return "hello";
   const refreshToken: string = await jwt.sign(
     user,
     process.env.REFRESH_ACCESS_TOKEN!,
@@ -35,7 +38,7 @@ export const signUp = async (
   res: Response,
   next: NextFunction
 ): Promise<Response> => {
-  console.log("addUser called");
+  // console.log("addUser called");
 
   const temp: string = req.body.password;
   const saltPassword: string = await bcrypt.genSalt(10);
@@ -59,15 +62,13 @@ export const signUp = async (
       return res.status(400).json({ message: "User name already exists." });
     }
 
-    console.log("Checkpoint 1");
+    // console.log("Checkpoint 1");
 
-    const newuser = new User(user);
+    const newuser = await User.create(user);
 
-    console.log("Checkpoint 2: " + newuser);
+    // console.log("Checkpoint 2: " + newuser);
 
-    await newuser.save();
-
-    console.log("Checkpoint 3");
+    // console.log("Checkpoint 3");
 
     return res
       .status(200)
@@ -76,7 +77,7 @@ export const signUp = async (
     console.error("Error in signUp:", e);
     return res
       .status(500)
-      .json({ error: "An error occurred while processing the request." });
+      .json({ error: "An error occurred while processing the request." + e });
   }
 };
 
@@ -89,32 +90,36 @@ export const login = async (
   next: NextFunction
 ): Promise<void | Response> => {
   try {
-    console.log("login called");
+    // console.log("login called");
     const loginname: string = req.body.name;
     const loginpassword: string = req.body.password;
 
-    console.log(loginpassword, loginname);
+    // // console.log(loginpassword, loginname);
 
     const dbuser = await User.findOne({ name: loginname });
-    console.log(dbuser);
+    // console.log(dbuser);
     if (!dbuser || dbuser.name == undefined)
       return res.status(400).json({ msg: "No such username found" });
 
-    console.log(loginpassword, dbuser.password);
+    // console.log(loginpassword, dbuser.password);
 
     const result: boolean = await bcrypt.compare(
       loginpassword,
       dbuser.password
     );
 
+    // console.log(dbuser);
+
     if (!result) {
       return res.status(401).json({ msg: "Invalid Password" });
     } else {
-      const id: Types.ObjectId = dbuser._id;
+      const id: string = dbuser.name;
 
       const user: IUser = { id };
 
+      // // console.log(user);
       const accessToken: string = await generateAccessToken(user);
+      // // console.log(accessToken);
       const refreshToken: string = await generateRefreshToken(user);
 
       res.status(200).json({
@@ -133,7 +138,7 @@ export const refreshToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  // console.log("Refresh token"+ req.headers.token);
+  // // console.log("Refresh token"+ req.headers.token);
   if (
     req.headers.token == null ||
     req.headers.token === "" ||
@@ -142,7 +147,7 @@ export const refreshToken = async (
     return res.status(401).json({ msg: "refreshToken undefined" });
   }
 
-  console.log("token :" + req.headers.token);
+  // console.log("token :" + req.headers.token);
 
   const refreshToken: string = req.headers.token.toString();
 
@@ -152,7 +157,7 @@ export const refreshToken = async (
       process.env.REFRESH_ACCESS_TOKEN!
     );
 
-    // console.log("user : " + user);
+    // // console.log("user : " + user);
 
     if (!user || typeof user === "string" || !user.id) {
       return res.status(401).json({ msg: "Invalid refreshToken" });
@@ -164,7 +169,7 @@ export const refreshToken = async (
 
     res.status(200).json({ accessToken });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(401).json({ msg: "Invalid refreshToken" });
   }
 };

@@ -5,7 +5,7 @@
     "start": " node dist/server.js",
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\" \"nodemon dist/server.js\"",
-    "test": "mocha --require ts-node/register test/**/*.test.ts"
+    "test": "mocha --require ts-node/register test/**/*.test.ts --exit"
   },
   "dependencies": {
     "@types/express": "^4.17.17",
